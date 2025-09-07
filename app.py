@@ -120,72 +120,52 @@ with tab1:
     if df_filtered.empty:
         st.warning("No data available for the selected filters. Please select at least one region.")
     else:
-        # Key summary metrics
+        # Display key summary statistics
+        st.subheader("Key Metrics")
         total_clients = df_filtered.shape[0]
         average_age = round(df_filtered['age'].mean())
         average_charges = int(df_filtered['charges'].mean())
-
-        st.subheader("Key Metrics")
+        
         col1, col2, col3 = st.columns(3)
         col1.metric("Total Clients", f"{total_clients}")
         col2.metric("Average Client Age", f"{average_age} years")
         col3.metric("Average Annual Charge", f"$ {average_charges:,}")
         st.markdown("---")
 
-        # Visualizations: risk factors and demographics
-        st.header("Core Risk Factor Analysis")
-        col1, col2 = st.columns(2)
+        # Performance guidance for the user
+        st.info("💡 To ensure optimal performance, charts are loaded on-demand. Please expand the sections below to view the visualizations.")
 
-        with col1:
-            smoker_charges = df_filtered.groupby('smoker')['charges'].mean().round(2).reset_index()
-            fig_smoker_charges = px.bar(
-                smoker_charges, x='smoker', y='charges',
-                title="Average Charges: Smokers vs. Non-Smokers",
-                labels={'charges': 'Avg. Charges ($)', 'smoker': 'Smoker Status'},
-                text='charges', color='smoker',
-                color_discrete_map={'yes': '#FF5733', 'no': '#33C1FF'}
-            )
-            st.plotly_chart(fig_smoker_charges, use_container_width=True)
+        # Core Risk Factor Analysis Section
+        with st.expander("Expand to see Core Risk Factor Analysis"):
+            col1, col2 = st.columns(2)
+            with col1:
+                smoker_charges = df_filtered.groupby('smoker')['charges'].mean().round(2).reset_index()
+                fig_smoker = px.bar(smoker_charges, x='smoker', y='charges', title="Average Charges: Smokers vs. Non-Smokers", text='charges', color='smoker', color_discrete_map={'yes': '#FF5733', 'no': '#33C1FF'})
+                st.plotly_chart(fig_smoker, use_container_width=True)
+            with col2:
+                fig_box = px.box(df_filtered, x='smoker', y='charges', title="Distribution of Charges by Smoker Status", color='smoker', color_discrete_map={'yes': '#FF5733', 'no': '#33C1FF'})
+                st.plotly_chart(fig_box, use_container_width=True)
 
-        with col2:
-            fig_box_charges = px.box(
-                df_filtered, x='smoker', y='charges',
-                title="Distribution of Charges by Smoker Status",
-                labels={'charges': 'Charges ($)', 'smoker': 'Smoker Status'},
-                color='smoker',
-                color_discrete_map={'yes': '#FF5733', 'no': '#33C1FF'}
-            )
-            st.plotly_chart(fig_box_charges, use_container_width=True)
-
-        st.header("Demographic & Health Analysis")
-        col1, col2 = st.columns(2)
-
-        with col1:
-            fig_bmi_scatter = px.scatter(
-                df_filtered, x='bmi', y='charges', color='smoker',
-                title="BMI vs. Charges (Colored by Smoker Status)",
-                labels={'bmi': 'Body Mass Index (BMI)', 'charges': 'Charges ($)'},
-                hover_data=['age', 'sex']
-            )
-            st.plotly_chart(fig_bmi_scatter, use_container_width=True)
-
-        with col2:
-            fig_age_dist = px.histogram(
-                df_filtered, x='age',
-                title="Distribution of Client Ages",
-                labels={'age': 'Age'},
-                nbins=20
-            )
-            st.plotly_chart(fig_age_dist, use_container_width=True)
-
-        # Data preview and download option
+        # Demographic & Health Analysis Section
+        with st.expander("Expand to see Demographic & Health Analysis"):
+            col1, col2 = st.columns(2)
+            with col1:
+                fig_scatter = px.scatter(df_filtered, x='bmi', y='charges', color='smoker', title="BMI vs. Charges", hover_data=['age', 'sex'])
+                st.plotly_chart(fig_scatter, use_container_width=True)
+            with col2:
+                fig_hist = px.histogram(df_filtered, x='age', title="Distribution of Client Ages", nbins=20)
+                st.plotly_chart(fig_hist, use_container_width=True)
+        
+        st.markdown("---")
+        
+        # Data Preview and Download
         with st.expander("View Filtered Data"):
             st.dataframe(df_filtered)
-
+            
         st.download_button(
-            label="📥 Download Filtered Data as CSV",
-            data=df_filtered.to_csv(index=False).encode('utf-8'),
-            file_name='filtered_insurance_data.csv',
+            label="📥 Download Filtered Data as CSV", 
+            data=df_filtered.to_csv(index=False).encode('utf-8'), 
+            file_name='filtered_insurance_data.csv', 
             mime='text/csv'
         )
 
