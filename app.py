@@ -192,13 +192,17 @@ with tab1:
 # ------------------ Tab 2: Automated Analysis ------------------
 with tab2:
     st.header("Automated Data Profile Report")
-    st.write("This report provides an automated exploration of the dataset based on the applied filters.")
+    st.write("Click the button below to generate a detailed profile of the filtered data. This can take a few moments on the free server.")
 
-    if not df_filtered.empty:
-        pr = ProfileReport(df_filtered, explorative=True, minimal=True)
-        html(pr.to_html(), height=1000, scrolling=True)
-    else:
-        st.warning("The report cannot be generated because no data is selected.")
+    # Only generate the report when the user clicks the button
+    if st.button("Generate Report"):
+        if not df_filtered.empty:
+            # Show a spinner while the report is being generated
+            with st.spinner("Generating report, please wait..."):
+                pr = ProfileReport(df_filtered, explorative=True, minimal=True)
+                html(pr.to_html(), height=1000, scrolling=True)
+        else:
+            st.warning("The report cannot be generated because no data is selected.")
 
 # ------------------ Tab 3: Premium Predictor ------------------
 with tab3:
