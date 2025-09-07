@@ -1,6 +1,6 @@
 # RiskScope: An Actuarial Pricing Engine
 
-**Live Demo:** [**<-- MY STREAMLIT CLOUD URL HERE**](https://my-app-url.streamlit.app/)
+**Live Demo:** [**<-- MY STREAMLIT CLOUD URL HERE**]([https://my-app-url.streamlit.app/](https://risk-scope-actuarial-engine.streamlit.app/))
 
 ---
 
