@@ -1,12 +1,13 @@
 --only-binary=:all:
 pip==25.2
 setuptools==69.0.3
+wheel
 streamlit==1.33.0
 pandas==2.2.1
 plotly-express==0.4.1
-ydata-profiling==4.6.4
 scikit-learn==1.4.1.post1
 shap==0.44.1
+ydata-profiling==4.6.4
 
 
 
