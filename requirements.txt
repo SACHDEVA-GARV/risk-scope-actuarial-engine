@@ -1,0 +1,7 @@
+streamlit
+pandas
+plotly-express
+ydata-profiling
+setuptools
+scikit-learn
+shap
